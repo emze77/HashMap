@@ -51,6 +51,17 @@ describe("HashMap.hash(key)", () => {
   })
 })
 
+describe("HashMap.set(key, value)", () => {
+  it("stores the given value in the correct bucket of hashed key", () => {
+    const key = "foo"
+    const value = "bar"
+    const bucketNumber = map.hash(key)
+    map.set(key, value)
+    expect(map.buckets[bucketNumber]).toBe(value)
+
+  })
+})
+
 
 
 

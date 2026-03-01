@@ -1,6 +1,7 @@
 export default class HashMap {
   loadFactor = 0.75
   capacity = 16
+  buckets = []
 
   hash(key) {
     if (typeof key !== "string") {
@@ -17,4 +18,10 @@ export default class HashMap {
 
     return hashCode
   }
+
+  set(key, value) {
+    const hash = this.hash(key)
+    this.buckets[hash] = value
+  }
+
 }
