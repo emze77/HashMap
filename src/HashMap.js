@@ -1,3 +1,5 @@
+import Entry from "./Entry.js"
+
 export default class HashMap {
   loadFactor = 0.75
   capacity = 16
@@ -21,7 +23,8 @@ export default class HashMap {
 
   set(key, value) {
     const hash = this.hash(key)
-    this.buckets[hash] = value
+    const entry = new Entry(key, value)
+    this.buckets[hash] = entry
   }
 
 }

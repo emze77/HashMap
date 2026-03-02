@@ -1,3 +1,4 @@
+import Entry from "./Entry.js";
 import HashMap from "./HashMap.js";
 
 let map
@@ -52,14 +53,38 @@ describe("HashMap.hash(key)", () => {
 })
 
 describe("HashMap.set(key, value)", () => {
-  it("stores the given value in the correct bucket of hashed key", () => {
+
+  it("stores the given value in the correct bucket", () => {
     const key = "foo"
     const value = "bar"
-    const bucketNumber = map.hash(key)
+    const entry = new Entry(key, value)
+    const hash = map.hash(key)
     map.set(key, value)
-    expect(map.buckets[bucketNumber]).toBe(value)
-
+    expect(map.buckets[hash]).toEqual(entry)
   })
+
+  it.skip("updates value when same key is used twice", () => {
+    map.set("foo", 1)
+    map.set("foo", 2)
+    const hash = map.hash("foo")
+    expect(map.buckets[hash].value).toBe(2)
+  })
+
+  it.todo("takes every type as value")
+
+  it.todo("does not change entry, when another key is in bucket")
+
+  it.todo("if bucket is taken, stores entry in correct bucket according collision-dealing-method")
+
+  it.todo("expands maps capacity when load-factor is reached")
+
+  it.todo("spreads keys according new capacity after load-factor is reached")
+
+
+
+
+
+
 })
 
 
