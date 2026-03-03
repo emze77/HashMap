@@ -22,9 +22,52 @@ export default class HashMap {
   }
 
   set(key, value) {
-    const hash = this.hash(key)
-    const entry = new Entry(key, value)
-    this.buckets[hash] = entry
+    let hash = this.hash(key)
+    const firstHash = hash
+
+    while (true) {
+      if (this.buckets[hash] === undefined) {
+        this.buckets[hash] = new Entry(key, value)
+        break
+      } else if (this.buckets[hash].key === key) {
+        this.buckets[hash].value = value
+        break
+      } else {
+        // console.log(`Cannot store ${key}: bucket ${hash} is already taken by another key! (${this.buckets[hash].key})`)
+        hash = this.#handleCollision(hash)
+        if (hash === firstHash) {
+          throw new Error(`Method to handle collision is not able to find empty bucket.`)
+          // console.log(`Method to handle collision is not able to find empty bucket.`)
+          break
+        }
+        continue
+      }
+    }
+
+
+  }
+
+  /*
+  How to Handle Collision:
+  Set: check if (3 / PRIME) away is 'undefined' / 'same key' / 'deleted'!
+    if: bucket is original bucket: break --> not solvable
+    true: new hash is free bucket
+    false: continue loop
+  */
+
+  #handleCollision(hash) {
+    const COLLISION_JUMPER = 3
+    const nextHash = hash + COLLISION_JUMPER
+    if (nextHash >= this.capacity) {
+      nextHash = nextHash - this.capacity
+    }
+
+    return nextHash
+
+  }
+
+  clear() {
+    this.buckets = []
   }
 
 }

@@ -1,10 +1,16 @@
 import Entry from "./Entry.js";
 import HashMap from "./HashMap.js";
 
+
+const metaSyntactics = ["foo", "bar", "baz", "qux", "quux", "corge", "grault", "garply", "waldo", "fred", "plug", "xyzzy", "thud"]
 let map
 
 beforeAll(() => {
   map = new HashMap()
+})
+
+beforeEach(() => {
+  map.clear()
 })
 
 describe("HashMap", () => {
@@ -63,30 +69,106 @@ describe("HashMap.set(key, value)", () => {
     expect(map.buckets[hash]).toEqual(entry)
   })
 
-  it.skip("updates value when same key is used twice", () => {
+  it("updates value when same key is used twice", () => {
     map.set("foo", 1)
     map.set("foo", 2)
     const hash = map.hash("foo")
     expect(map.buckets[hash].value).toBe(2)
   })
 
-  it.todo("takes every type as value")
+  it("takes every type as value", () => {
 
-  it.todo("does not change entry, when another key is in bucket")
+    const types = ["string", 123, { some: "object" }, ["array", 123], null, undefined, NaN, false]
 
-  it.todo("if bucket is taken, stores entry in correct bucket according collision-dealing-method")
+    for (let type of types) {
+      expect(() => map.set("foo", type)).not.toThrow()
+    }
+  })
+
+  it("does not change entry, when another key with the same hash is in bucket", () => {
+
+    // test, if hash is equal despite different keys
+    const hash1 = map.hash("Rama") // 3
+    const hash2 = map.hash("Sita") // 3
+    expect(hash1).toBe(hash2)
+
+    map.set("Rama", 1)
+    map.set("Sita", 2)
+    expect(map.buckets[hash1].value).toBe(1)
+  })
+
+  it("if bucket is taken, stores entry in correct bucket according collision-dealing-method", () => {
+    // test, if hash is equal despite different keys
+    const hash1 = map.hash("Rama") // 3
+    const hash2 = map.hash("Sita") // 3
+    expect(hash1).toBe(hash2)
+
+    // error handling: jump three buckets
+    map.set("Rama", 1)
+    map.set("Sita", 2)
+    expect(map.buckets[3].value).toBe(1)
+    expect(map.buckets[6].value).toBe(2)
+  })
+
+  // how to test a failure, which shouldn't appear?
+  it.todo("throws Error when collision handling method is not able to find empty bucket.")
+
 
   it.todo("expands maps capacity when load-factor is reached")
 
   it.todo("spreads keys according new capacity after load-factor is reached")
 
-
-
-
-
-
 })
 
+describe("HashMap.clear()", () => {
+
+  it("removes every item from buckets", () => {
+    map.set("foo")
+    map.set("bar")
+    map.clear()
+    expect(map.buckets.length).toBe(0)
+  })
+
+  it.todo("default capacity resets to 16.")
+})
+
+describe("HashMap.get()", () => {
+
+  it.todo("gets value of given key inside otherwise empty map")
+
+  it.todo("gets value of given key in simple collision-scenario")
+
+  it.todo("gets value of given key in collision scenario, after one tried out bucket was removed afterwards")
+
+  it.todo("returns null if key is not found")
+})
+
+describe("HashMap.keys()", () => {
+
+
+
+  it("returns an array containing all the keys inside the hash map.", () => {
+
+    const KEYS_AMOUNT = 6
+
+    for (let i = 0; i < KEYS_AMOUNT; i++) {
+      map.set(`${metaSyntactics[i]}`, i)
+      expect(map.keys()).toContain(metaSyntactics[i])
+    }
+
+    // for (let i = 0; i < KEYS_AMOUNT; i++) {
+    //   expect(map.keys()).toContain(metaSyntactics[i])
+    // }
+
+
+
+    // map.set("foo", 1)
+    // map.set("bar", 2)
+    // map.set("baz", 3)
+    // map.set("qux", 4)
+    // expect(map.keys()).toContain("foo")
+  })
+})
 
 
 
