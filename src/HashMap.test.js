@@ -145,29 +145,30 @@ describe("HashMap.get()", () => {
 
 describe("HashMap.keys()", () => {
 
+  const KEYS_AMOUNT = 6
+
+  beforeEach(() => {
+    for (let i = 0; i < KEYS_AMOUNT; i++) {
+      map.set(`${metaSyntactics[i]}`, i)
+    }
+  })
 
 
   it("returns an array containing all the keys inside the hash map.", () => {
 
-    const KEYS_AMOUNT = 6
-
     for (let i = 0; i < KEYS_AMOUNT; i++) {
-      map.set(`${metaSyntactics[i]}`, i)
       expect(map.keys()).toContain(metaSyntactics[i])
     }
-
-    // for (let i = 0; i < KEYS_AMOUNT; i++) {
-    //   expect(map.keys()).toContain(metaSyntactics[i])
-    // }
-
-
-
-    // map.set("foo", 1)
-    // map.set("bar", 2)
-    // map.set("baz", 3)
-    // map.set("qux", 4)
-    // expect(map.keys()).toContain("foo")
   })
+
+  it.skip("doesn't return anything which is not a key of a valid entry", () => {
+    const keys = map.keys()
+
+    // get(key)...
+
+
+  })
+
 })
 
 

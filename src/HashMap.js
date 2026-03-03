@@ -43,8 +43,6 @@ export default class HashMap {
         continue
       }
     }
-
-
   }
 
   /*
@@ -69,5 +67,14 @@ export default class HashMap {
   clear() {
     this.buckets = []
   }
+
+  keys() {
+    const keys = []
+    for (let entry of this.buckets) {
+      if (entry?.key) keys.push(entry.key)
+    }
+    return keys
+  }
+
 
 }
