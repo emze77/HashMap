@@ -28,84 +28,58 @@ export default class HashMap {
       if (this.buckets[hash] === undefined) {
         this.buckets[hash] = new Entry(key, value)
         return
-      } else if (this.buckets[hash]?.key === key) {
+      }
+
+      if (this.buckets[hash]?.key === key) {
         this.buckets[hash].value = value
         return
-      } else {
-        hash = this.#handleCollision(hash)
-        continue
       }
+
+      hash = this.#stepProbeBy3(hash)
     }
 
     throw new Error(`Couldn't find empty bucket for key`)
-
-
-    // while (true) {
-    //   if (this.buckets[hash] === undefined) {
-    //     this.buckets[hash] = new Entry(key, value)
-    //     break
-    //   } else if (this.buckets[hash].key === key) {
-    //     this.buckets[hash].value = value
-    //     break
-    //   } else {
-    //     hash = this.#handleCollision(hash)
-    //     if (hash === firstHash) {
-    //       throw new Error(`Method to handle collision is not able to find empty bucket.`)
-    //     }
-    //     continue
-    //   }
-    // }
   }
 
   get(key) {
     let hash = this.hash(key)
 
-    while (true) {
+    for (let i = 0; i <= this.buckets.length; i++) {
       if (this.buckets[hash] instanceof Entry &&
-        this.buckets[hash].key === key) {
-        return this.buckets[hash].value
+        this.buckets[hash].key === key
+      ) return this.buckets[hash].value
 
-      } else if (this.buckets[hash] instanceof Entry &&
+      if (this.buckets[hash] instanceof Entry &&
         this.buckets[hash].key !== key ||
         this.buckets[hash] === "removed"
-      ) {
-        hash = this.#handleCollision(hash)
-        continue
-
-      } else {
-        return null
-      }
+      ) hash = this.#stepProbeBy3(hash)
     }
+
+    return null
   }
 
   remove(key) {
     let hash = this.hash(key)
+    let counter = 0
 
-    while (true) {
+    do {
       if (this.buckets[hash] instanceof Entry &&
         this.buckets[hash].key === key) {
         this.buckets[hash] = "removed"
         return true
-      } else if (this.buckets[hash] instanceof Entry &&
-        this.buckets[hash].key !== key) {
-        hash = this.#handleCollision(hash)
-        continue
-      } else {
-        return false
       }
-    }
+      hash = this.#stepProbeBy3(hash)
+      counter++
+    } while (
+      this.buckets[hash] instanceof Entry ||
+      this.buckets[hash] === "removed" &&
+      counter <= this.buckets.length
+    )
 
+    return false
   }
 
-  /*
-  How to Handle Collision:
-  Set: check if (3 / PRIME) away is 'undefined' / 'same key' / 'deleted'!
-    if: bucket is original bucket: break --> not solvable
-    true: new hash is free bucket
-    false: continue loop
-  */
-
-  #handleCollision(hash) {
+  #stepProbeBy3(hash) {
     const COLLISION_JUMPER = 3
     const nextHash = hash + COLLISION_JUMPER
     if (nextHash >= this.capacity) {
@@ -113,7 +87,6 @@ export default class HashMap {
     }
 
     return nextHash
-
   }
 
   clear() {

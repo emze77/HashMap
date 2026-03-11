@@ -97,7 +97,7 @@ describe("HashMap.set(key, value)", () => {
     expect(map.buckets[hash1].value).toBe(1)
   })
 
-  it("if bucket is taken, stores entry in correct bucket according collision-dealing-method", () => {
+  it("if bucket is taken, use a collision-handling-method", () => {
     // test, if hash is equal despite different keys
     const hash1 = map.hash("Rama") // 3
     const hash2 = map.hash("Sita") // 3
