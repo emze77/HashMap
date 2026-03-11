@@ -134,11 +134,53 @@ describe("HashMap.clear()", () => {
 
 describe("HashMap.get()", () => {
 
-  it.todo("gets value of given key inside otherwise empty map")
+  it("gets value of given key inside otherwise empty map", () => {
+    // test if hash-value of "foo" & "bar" is different
+    const hash1 = map.hash("foo")
+    const hash2 = map.hash("bar")
+    expect(hash1 === hash2).toBe(false)
 
-  it.todo("gets value of given key in simple collision-scenario")
+    map.set("foo", 1)
+    map.set("bar", 2)
+    expect(map.get("foo")).toBe(1)
+    expect(map.get("bar")).toBe(2)
+  })
 
-  it.todo("gets value of given key in collision scenario, after one tried out bucket was removed afterwards")
+  it("return null if key is not in the hash-map", () => {
+    expect(map.get("buzz")).toBeNull
+  })
+
+  it("gets value of given key in simple collision-scenario", () => {
+    // test, if hash is equal despite different keys
+    const hash1 = map.hash("Rama") // 3
+    const hash2 = map.hash("Sita") // 3
+    const hash3 = map.hash("s") // 3
+    expect(hash1).toBe(hash2)
+    expect(hash2).toBe(hash3)
+
+    map.set("Rama", 1)
+    map.set("Sita", 2)
+    expect(map.get("Sita")).toBe(2)
+
+    map.set("s", 3)
+    expect(map.get("s")).toBe(3)
+
+  })
+
+  it("gets value of given key in collision scenario, after one skipped bucket was removed afterwards", () => {
+    // test, if hash is equal despite different keys
+    const hash1 = map.hash("Rama") // 3
+    const hash2 = map.hash("Sita") // 3
+    const hash3 = map.hash("s") // 3
+    expect(hash1).toBe(hash2)
+    expect(hash2).toBe(hash3)
+
+    map.set("Rama", 1)
+    map.set("Sita", 2)
+    map.set("s", 3)
+    map.remove("Sita")
+    expect(map.get("s")).toBe(3)
+  })
 
   it.todo("returns null if key is not found")
 })
@@ -165,6 +207,18 @@ describe("HashMap.keys()", () => {
     const keys = map.keys()
 
     // get(key)...
+
+
+  })
+
+  describe("HashMap.remove(key)", () => {
+
+    it("does not return former value when deleted key is called", () => {
+      map.set("foo", 1)
+      map.remove("foo")
+      expect(map.get("foo")).not.toBe(1)
+    })
+
 
 
   })

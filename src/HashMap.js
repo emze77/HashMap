@@ -38,11 +38,50 @@ export default class HashMap {
         if (hash === firstHash) {
           throw new Error(`Method to handle collision is not able to find empty bucket.`)
           // console.log(`Method to handle collision is not able to find empty bucket.`)
-          break
         }
         continue
       }
     }
+  }
+
+  get(key) {
+    let hash = this.hash(key)
+
+    while (true) {
+      if (this.buckets[hash] instanceof Entry &&
+        this.buckets[hash].key === key) {
+        return this.buckets[hash].value
+
+      } else if (this.buckets[hash] instanceof Entry &&
+        this.buckets[hash].key !== key ||
+        this.buckets[hash] === "removed"
+      ) {
+        hash = this.#handleCollision(hash)
+        continue
+
+      } else {
+        return null
+      }
+    }
+  }
+
+  remove(key) {
+    let hash = this.hash(key)
+
+    while (true) {
+      if (this.buckets[hash] instanceof Entry &&
+        this.buckets[hash].key === key) {
+        this.buckets[hash] = "removed"
+        return true
+      } else if (this.buckets[hash] instanceof Entry &&
+        this.buckets[hash].key !== key) {
+        hash = this.#handleCollision(hash)
+        continue
+      } else {
+        return false
+      }
+    }
+
   }
 
   /*
