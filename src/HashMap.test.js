@@ -146,7 +146,7 @@ describe("HashMap.get()", () => {
     expect(map.get("bar")).toBe(2)
   })
 
-  it("return null if key is not in the hash-map", () => {
+  it("return null if key is not found", () => {
     expect(map.get("buzz")).toBeNull
   })
 
@@ -182,7 +182,6 @@ describe("HashMap.get()", () => {
     expect(map.get("s")).toBe(3)
   })
 
-  it.todo("returns null if key is not found")
 })
 
 describe("HashMap.keys()", () => {
