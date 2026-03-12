@@ -114,7 +114,29 @@ describe("HashMap.set(key, value)", () => {
   it.todo("throws Error when collision handling method is not able to find empty bucket.")
 
 
-  it.todo("expands maps capacity when load-factor is reached")
+  it("does not grow capacity within load-factors limit", () => {
+    const originalCapacity = map.capacity
+    const maxKeysBeforeGrowth = originalCapacity * map.loadFactor - 1
+
+    for (let i = 1; i <= maxKeysBeforeGrowth; i++) {
+      map.set(toString(i), i)
+    }
+
+    expect(originalCapacity === map.capacity).toBe(true)
+  })
+
+  it("grows when load-factor is reached", () => {
+    const originalCapacity = map.capacity
+
+    const firstKeyAmountToGrow = map.capacity * map.loadFactor
+    for (let i = 1; i <= firstKeyAmountToGrow; i++) {
+      map.set(`${i}`, i)
+    }
+
+    expect(originalCapacity).toBeLessThan(map.capacity)
+  })
+
+
 
   it.todo("spreads keys according new capacity after load-factor is reached")
 

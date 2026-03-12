@@ -22,6 +22,13 @@ export default class HashMap {
   }
 
   set(key, value) {
+
+    const load = this.buckets.length / this.capacity
+    if (load >= this.loadFactor) {
+      this.capacity = this.capacity * 2
+      this.#recalculateCurrentKeys()
+    }
+
     let hash = this.hash(key)
 
     for (let i = 0; i <= this.buckets.length; i++) {
@@ -101,5 +108,11 @@ export default class HashMap {
     return keys
   }
 
-
+  #recalculateCurrentKeys() {
+    const keys = this.keys();
+    this.clear()
+    for (let key in keys) {
+      map.set(key)
+    }
+  }
 }
