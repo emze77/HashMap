@@ -2,7 +2,6 @@ import Entry from "./Entry.js";
 import HashMap from "./HashMap.js";
 
 
-const metaSyntactics = ["foo", "bar", "baz", "qux", "quux", "corge", "grault", "garply", "waldo", "fred", "plug", "xyzzy", "thud"]
 let map
 
 beforeAll(() => {
@@ -208,44 +207,44 @@ describe("HashMap.get()", () => {
 
 describe("HashMap.keys()", () => {
 
-  const KEYS_AMOUNT = 6
-
-  beforeEach(() => {
-    for (let i = 0; i < KEYS_AMOUNT; i++) {
-      map.set(`${metaSyntactics[i]}`, i)
-    }
-  })
-
-
   it("returns an array containing all the keys inside the hash map.", () => {
+    map.set("foo", null)
+    map.set("bar", null)
+    map.set("baz", null)
 
-    for (let i = 0; i < KEYS_AMOUNT; i++) {
-      expect(map.keys()).toContain(metaSyntactics[i])
-    }
+    expect(map.keys()).toContain("foo")
+    expect(map.keys()).toContain("bar")
+    expect(map.keys()).toContain("baz")
   })
 
-  it.skip("doesn't return anything which is not a key of a valid entry", () => {
-    const keys = map.keys()
-
-    // get(key)...
-
-
+  it("doesn't return anything which is not a key of a valid entry", () => {
+    map.buckets[1] = "foo"
+    map.buckets[3] = { "foo": 1 }
+    map.buckets[5] = 123
+    expect(map.keys().length).toBe(0)
   })
+})
 
-  describe("HashMap.remove(key)", () => {
+describe("HashMap.values()", () => {
 
-    it("does not return former value when deleted key is called", () => {
-      map.set("foo", 1)
-      map.remove("foo")
-      expect(map.get("foo")).not.toBe(1)
-    })
-
-
+  it("returns an array containing all the values inside the hash map.", () => {
 
   })
 
 })
 
+
+describe("HashMap.remove(key)", () => {
+
+  it("does not return former value when deleted key is called", () => {
+    map.set("foo", 1)
+    map.remove("foo")
+    expect(map.get("foo")).not.toBe(1)
+  })
+
+
+
+})
 
 
 

@@ -22,13 +22,15 @@ export default class HashMap {
   }
 
   set(key, value) {
-
-    const load = this.buckets.length / this.capacity
-    if (load >= this.loadFactor) {
-      this.capacity = this.capacity * 2
+    if (this.#capacityCheck()) {
+      this.#growCapacity()
       this.#recalculateCurrentKeys()
     }
 
+    this.#setInCurrentTable(key, value)
+  }
+
+  #setInCurrentTable(key, value) {
     let hash = this.hash(key)
 
     for (let i = 0; i <= this.buckets.length; i++) {
@@ -46,6 +48,24 @@ export default class HashMap {
     }
 
     throw new Error(`Couldn't find empty bucket for key`)
+  }
+
+  #capacityCheck() {
+    const load = this.buckets.length / this.capacity
+    return load >= this.loadFactor
+  }
+
+  #growCapacity() {
+    this.capacity = this.capacity * 2
+  }
+
+  // get all entries and set them within new capacity
+  #recalculateCurrentKeys() {
+    const entries = this.#entries()
+    this.clear()
+    for (let entry of entries) {
+      this.#setInCurrentTable(entry.key, entry.value)
+    }
   }
 
   get(key) {
@@ -86,6 +106,7 @@ export default class HashMap {
     return false
   }
 
+  // collision handling
   #stepProbeBy3(hash) {
     const COLLISION_JUMPER = 3
     const nextHash = hash + COLLISION_JUMPER
@@ -102,17 +123,19 @@ export default class HashMap {
 
   keys() {
     const keys = []
-    for (let entry of this.buckets) {
-      if (entry?.key) keys.push(entry.key)
+    for (let item of this.buckets) {
+      if (item instanceof Entry) keys.push(item.key)
     }
     return keys
   }
 
-  #recalculateCurrentKeys() {
-    const keys = this.keys();
-    this.clear()
-    for (let key in keys) {
-      map.set(key)
+  #entries() {
+    const entries = []
+    for (let item of this.buckets) {
+      if (item instanceof Entry) entries.push(item)
     }
+    return entries
   }
+
+
 }
