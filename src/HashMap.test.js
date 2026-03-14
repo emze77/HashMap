@@ -237,10 +237,23 @@ describe("HashMap.keys()", () => {
 
 describe("HashMap.values()", () => {
 
-  it("returns an array containing all the values inside the hash map.", () => {
+  it("return an array containing all values inside the hash map", () => {
+    map.set("1", "foo")
+    map.set("2", "bar")
+    map.set("3", "baz")
 
+    expect(map.values()).toContain("foo")
+    expect(map.values()).toContain("bar")
+    expect(map.values()).toContain("baz")
   })
 
+  it("doesn't return anything which is not a value of a valid entry", () => {
+    map.buckets[1] = "foo"
+    map.buckets[3] = { "foo": 1 }
+    map.buckets[5] = 123
+
+    expect(map.values().length).toBe(0)
+  })
 })
 
 
@@ -251,8 +264,18 @@ describe("HashMap.remove(key)", () => {
     map.remove("foo")
     expect(map.get("foo")).not.toBe(1)
   })
+})
 
+describe("HashMap.has(key)", () => {
 
+  it("returns true when key is in the map.", () => {
+    map.set("foo", 1)
+    expect(map.has("foo")).toBe(true)
+  })
+
+  it("return false when key is not in the map", () => {
+    expect(map.has("foo")).toBe(false)
+  })
 
 })
 

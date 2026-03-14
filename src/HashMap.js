@@ -61,7 +61,7 @@ export default class HashMap {
 
   // get all entries and set them within new capacity
   #recalculateCurrentKeys() {
-    const entries = this.#entries()
+    const entries = this.entries()
     this.clear()
     for (let entry of entries) {
       this.#setInCurrentTable(entry.key, entry.value)
@@ -125,6 +125,10 @@ export default class HashMap {
     this.capacity = 16
   }
 
+  has(key) {
+    return !!this.get(key)
+  }
+
   keys() {
     const keys = []
     for (let item of this.buckets) {
@@ -133,7 +137,15 @@ export default class HashMap {
     return keys
   }
 
-  #entries() {
+  values() {
+    const values = []
+    for (let item of this.buckets) {
+      if (item instanceof Entry) values.push(item.value)
+    }
+    return values
+  }
+
+  entries() {
     const entries = []
     for (let item of this.buckets) {
       if (item instanceof Entry) entries.push(item)
