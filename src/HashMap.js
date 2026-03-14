@@ -121,6 +121,10 @@ export default class HashMap {
     this.buckets = []
   }
 
+  resetCapacity() {
+    this.capacity = 16
+  }
+
   keys() {
     const keys = []
     for (let item of this.buckets) {

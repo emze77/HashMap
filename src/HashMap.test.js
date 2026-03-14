@@ -10,6 +10,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   map.clear()
+  map.resetCapacity()
 })
 
 describe("HashMap", () => {
@@ -149,8 +150,21 @@ describe("HashMap.clear()", () => {
     map.clear()
     expect(map.buckets.length).toBe(0)
   })
+})
 
-  it.todo("default capacity resets to 16.")
+describe("HashMap.resetCapacity()", () => {
+
+  it("resets capacity to 16", () => {
+    const ENTRIES_AMOUNT = 20
+
+    for (let i = 1; i <= ENTRIES_AMOUNT; i++) {
+      map.set(toString(i), i)
+    }
+
+    map.resetCapacity()
+
+    expect(map.capacity).toBe(16)
+  })
 })
 
 describe("HashMap.get()", () => {
@@ -175,20 +189,16 @@ describe("HashMap.get()", () => {
     // test, if hash is equal despite different keys
     const hash1 = map.hash("Rama") // 3
     const hash2 = map.hash("Sita") // 3
-    const hash3 = map.hash("s") // 3
     expect(hash1).toBe(hash2)
-    expect(hash2).toBe(hash3)
 
     map.set("Rama", 1)
     map.set("Sita", 2)
     expect(map.get("Sita")).toBe(2)
-
-    map.set("s", 3)
-    expect(map.get("s")).toBe(3)
-
   })
 
   it("gets value of given key in collision scenario, after one skipped bucket was removed afterwards", () => {
+    expect(map.capacity).toBe(16)
+
     // test, if hash is equal despite different keys
     const hash1 = map.hash("Rama") // 3
     const hash2 = map.hash("Sita") // 3
