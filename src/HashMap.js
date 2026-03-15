@@ -3,7 +3,8 @@ import Entry from "./Entry.js"
 export default class HashMap {
   loadFactor = 0.75
   capacity = 16
-  buckets = []
+  buckets = new Array(this.capacity)
+  REMOVED = Symbol("removed")
 
   hash(key) {
     if (typeof key !== "string") {
@@ -33,7 +34,14 @@ export default class HashMap {
   #setInCurrentTable(key, value) {
     let hash = this.hash(key)
 
+
     for (let i = 0; i <= this.buckets.length; i++) {
+
+      if (hash < 0 || hash >= this.capacity) {
+        console.log(this.buckets.length)
+        throw new Error("Trying to access index out of bounds");
+      }
+
       if (this.buckets[hash] === undefined) {
         this.buckets[hash] = new Entry(key, value)
         return
@@ -62,7 +70,7 @@ export default class HashMap {
   // get all entries and set them within new capacity
   #recalculateCurrentKeys() {
     const entries = this.entries()
-    this.clear()
+    this.buckets = []
     for (let entry of entries) {
       this.#setInCurrentTable(entry.key, entry.value)
     }
@@ -78,7 +86,7 @@ export default class HashMap {
 
       if (this.buckets[hash] instanceof Entry &&
         this.buckets[hash].key !== key ||
-        this.buckets[hash] === "removed"
+        this.buckets[hash] === this.REMOVED
       ) hash = this.#stepProbeBy3(hash)
     }
 
@@ -92,7 +100,7 @@ export default class HashMap {
     do {
       if (this.buckets[hash] instanceof Entry &&
         this.buckets[hash].key === key) {
-        this.buckets[hash] = "removed"
+        this.buckets[hash] = this.REMOVED
         return true
       }
       hash = this.#stepProbeBy3(hash)
@@ -109,7 +117,7 @@ export default class HashMap {
   // collision handling
   #stepProbeBy3(hash) {
     const COLLISION_JUMPER = 3
-    const nextHash = hash + COLLISION_JUMPER
+    let nextHash = hash + COLLISION_JUMPER
     if (nextHash >= this.capacity) {
       nextHash = nextHash - this.capacity
     }
@@ -119,11 +127,13 @@ export default class HashMap {
 
   clear() {
     this.buckets = []
+    this.capacity = 16
+    this.loadFactor = 0.75
   }
 
-  resetCapacity() {
-    this.capacity = 16
-  }
+  // resetCapacity() {
+  //   this.capacity = 16
+  // }
 
   has(key) {
     return !!this.get(key)
@@ -135,6 +145,14 @@ export default class HashMap {
       if (item instanceof Entry) keys.push(item.key)
     }
     return keys
+  }
+
+  length() {
+    let entries = 0
+    for (let entry of this.buckets) {
+      if (entry instanceof Entry) entries++
+    }
+    return entries
   }
 
   values() {

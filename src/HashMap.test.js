@@ -10,7 +10,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   map.clear()
-  map.resetCapacity()
 })
 
 describe("HashMap", () => {
@@ -111,7 +110,16 @@ describe("HashMap.set(key, value)", () => {
   })
 
   // how to test a failure, which shouldn't appear?
-  it.todo("throws Error when collision handling method is not able to find empty bucket.")
+  it("throws Error when collision handling method is not able to find empty bucket.", () => {
+    map.loadFactor = 1
+    map.capacity = 5
+    map.buckets[0] = new Entry("foo", 1)
+    map.buckets[1] = new Entry("bar", 2)
+    map.buckets[2] = new Entry("caf", 3)
+    map.buckets[3] = new Entry("delz", 4)
+    map.buckets[4] = new Entry("ciork", 5)
+    expect(() => map.set("baz", 6)).toThrowError()
+  })
 
 
   it("does not grow capacity within load-factors limit", () => {
@@ -142,6 +150,23 @@ describe("HashMap.set(key, value)", () => {
 
 })
 
+describe("HashMap.length()", () => {
+  it("return number of entry in map", () => {
+    map.set("foo", 1)
+    map.set("bar", 2)
+    map.set("buzz", 3)
+    expect(map.length()).toBe(3)
+  })
+
+  it("doesn't count removed entries", () => {
+    map.set("foo", 1)
+    map.set("bar", 2)
+    map.set("buzz", 3)
+    map.remove("foo")
+    expect(map.length()).toBe(2)
+  })
+})
+
 describe("HashMap.clear()", () => {
 
   it("removes every item from buckets", () => {
@@ -150,9 +175,6 @@ describe("HashMap.clear()", () => {
     map.clear()
     expect(map.buckets.length).toBe(0)
   })
-})
-
-describe("HashMap.resetCapacity()", () => {
 
   it("resets capacity to 16", () => {
     const ENTRIES_AMOUNT = 20
@@ -161,11 +183,12 @@ describe("HashMap.resetCapacity()", () => {
       map.set(toString(i), i)
     }
 
-    map.resetCapacity()
+    map.clear()
 
     expect(map.capacity).toBe(16)
   })
 })
+
 
 describe("HashMap.get()", () => {
 
