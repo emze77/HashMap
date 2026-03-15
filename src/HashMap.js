@@ -35,10 +35,10 @@ export default class HashMap {
     let hash = this.hash(key)
 
 
-    for (let i = 0; i <= this.buckets.length; i++) {
+    for (let i = 0; i <= this.length(); i++) {
 
       if (hash < 0 || hash >= this.capacity) {
-        console.log(this.buckets.length)
+        console.log(this.length())
         throw new Error("Trying to access index out of bounds");
       }
 
@@ -59,7 +59,7 @@ export default class HashMap {
   }
 
   #capacityCheck() {
-    const load = this.buckets.length / this.capacity
+    const load = this.length() / this.capacity
     return load >= this.loadFactor
   }
 
@@ -79,7 +79,7 @@ export default class HashMap {
   get(key) {
     let hash = this.hash(key)
 
-    for (let i = 0; i <= this.buckets.length; i++) {
+    for (let i = 0; i <= this.length(); i++) {
       if (this.buckets[hash] instanceof Entry &&
         this.buckets[hash].key === key
       ) return this.buckets[hash].value
@@ -108,7 +108,7 @@ export default class HashMap {
     } while (
       this.buckets[hash] instanceof Entry ||
       this.buckets[hash] === "removed" &&
-      counter <= this.buckets.length
+      counter <= this.length()
     )
 
     return false

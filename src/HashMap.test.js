@@ -111,14 +111,14 @@ describe("HashMap.set(key, value)", () => {
 
   // how to test a failure, which shouldn't appear?
   it("throws Error when collision handling method is not able to find empty bucket.", () => {
-    map.loadFactor = 1
+    map.loadFactor = 2
     map.capacity = 5
     map.buckets[0] = new Entry("foo", 1)
     map.buckets[1] = new Entry("bar", 2)
     map.buckets[2] = new Entry("caf", 3)
     map.buckets[3] = new Entry("delz", 4)
     map.buckets[4] = new Entry("ciork", 5)
-    expect(() => map.set("baz", 6)).toThrowError()
+    expect(() => map.set("baz", 6)).toThrow()
   })
 
 
@@ -137,7 +137,7 @@ describe("HashMap.set(key, value)", () => {
     const originalCapacity = map.capacity
 
     const firstKeyAmountToGrow = map.capacity * map.loadFactor
-    for (let i = 1; i <= firstKeyAmountToGrow; i++) {
+    for (let i = 0; i <= firstKeyAmountToGrow; i++) {
       map.set(`${i}`, i)
     }
 
@@ -146,7 +146,12 @@ describe("HashMap.set(key, value)", () => {
 
 
 
-  it.todo("spreads keys according new capacity after load-factor is reached")
+  it("spreads keys according new capacity after load-factor is reached", () => {
+    // get hash-value of "foo" with capacity of 32
+    map.capacity = 32
+    expect (map.hash("bar")).toBe(19)
+    map.clear()
+  })
 
 })
 
