@@ -171,5 +171,22 @@ export default class HashMap {
     return entries
   }
 
+  visualize() {
+    let visual = ""
+    for (let index = 0; index <= this.capacity; index++) {
+      visual += "|"
+      if (this.buckets[index] instanceof Entry) {
+        visual += "X"
+      } else if (this.buckets[index] === this.REMOVED) {
+        visual += "r"
+      } else if (this.buckets[index] === undefined) {
+        visual += "_"
+      } else {
+        visual += "?"
+      }
+    }
+    return visual
+  }
+
 
 }

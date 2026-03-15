@@ -14,12 +14,13 @@ map.set('ice cream', 'white')
 map.set('jacket', 'blue')
 map.set('kite', 'pink')
 map.set('lion', 'golden')
-map.set('moon', 'silver')
+map.set('some', 'thing')
+
 
 console.log(`
   map-capacity: ${map.capacity}\n
   map-length: ${map.length()}\n
-  map-entries: ${JSON.stringify(map.entries(), 0, 2)}
+  ${map.visualize()}
   `)
 
 
